@@ -5,7 +5,7 @@ MOCKGEN=${BINDIR}/mockgen_${GOVER}
 SMARTIMPORTS=${BINDIR}/smartimports_${GOVER}
 LINTVER=v1.49.0
 LINTBIN=${BINDIR}/lint_${GOVER}_${LINTVER}
-PACKAGE=gitlab.ozon.dev/classroom-4/teachers/workshop-1-bot/cmd/bot
+PACKAGE=github.com/Muvi7z/telegramBot.git/cmd/bot
 
 all: format build test lint
 
