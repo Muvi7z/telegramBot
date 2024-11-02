@@ -1,7 +1,9 @@
 package messages
 
+//Дз добавил возмодность добавления нового расхода, должно быть сумма, группа, дата,
+
 type MessageSender interface {
-	SendMessage(text string, userID int64) error
+	SendMessage(userID int64, text string) error
 }
 
 func New(tgClient MessageSender) *Model {
@@ -21,8 +23,7 @@ type Message struct {
 
 func (s *Model) IncomingMessage(msg Message) error {
 	if msg.Text == "/start" {
-		s.tgClient.SendMessage("hello", 123)
+		return s.tgClient.SendMessage(123, "hello")
 	}
-	s.tgClient.SendMessage("не знаю эту команду", 123)
-	return nil
+	return s.tgClient.SendMessage(123, "не знаю эту команду")
 }
