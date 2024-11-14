@@ -1,23 +1,35 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
-func main3() {
+type Name struct {
+	Mem int `json:"mem"`
+}
 
-	job := make(chan int, 4)
-
-	out := task(job)
-
-	for i := 0; i < 12; i++ {
-		job <- i
+func main() {
+	var dd int
+	myVal := Name{}
+	bytes := `{"mem":"1ss"}`
+	err := json.Unmarshal([]byte(bytes), &myVal)
+	if err != nil {
 	}
-	close(job)
 
-	for v := range out {
-		fmt.Println(v)
-	}
+	fmt.Println(dd)
+	//job := make(chan int, 4)
+	//
+	//out := task(job)
+	//
+	//for i := 0; i < 12; i++ {
+	//	job <- i
+	//}
+	//close(job)
+	//
+	//for v := range out {
+	//	fmt.Println(v)
+	//}
 
 }
 

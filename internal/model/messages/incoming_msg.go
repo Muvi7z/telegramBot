@@ -51,5 +51,9 @@ func (s *Model) IncomingMessage(msg Message) error {
 		return s.tgClient.SendMessage(msg.UserID, introMessage)
 	}
 
+	if strings.HasPrefix(msg.Text, "/set_currency") {
+		return s.tgClient.SendMessage(msg.UserID, introMessage)
+	}
+
 	return s.tgClient.SendMessage(123, "не знаю эту команду")
 }

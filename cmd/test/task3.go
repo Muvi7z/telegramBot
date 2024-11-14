@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func main() {
+func main3() {
 	ctx, cancel := context.WithCancel(context.Background())
 	for i := 0; i < 100; i++ {
 		work(ctx)
