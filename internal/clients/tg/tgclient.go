@@ -27,8 +27,23 @@ func New(tokenGetter TokenGetter) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) SendMessage(userId int64, text string) error {
-	_, err := c.client.Send(tgbotapi.NewMessage(userId, text))
+func (c *Client) SendMessage(userId int64, text string, buttons ...map[string]string) error {
+	msg := tgbotapi.NewMessage(userId, text)
+
+	if len(buttons) != 0 {
+		var rows [][]tgbotapi.InlineKeyboardButton
+		for _, button := range buttons {
+			var row []tgbotapi.InlineKeyboardButton
+			for text, data := range button {
+				row = append(row, tgbotapi.NewInlineKeyboardButtonData(text, data))
+			}
+			rows = append(rows, row)
+		}
+
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(rows...)
+	}
+
+	_, err := c.client.Send(msg)
 	if err != nil {
 		return errors.Wrap(err, "client.SendMessage")
 	}

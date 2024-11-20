@@ -9,7 +9,7 @@ type Name struct {
 	Mem int `json:"mem"`
 }
 
-func main() {
+func main77() {
 	var dd int
 	myVal := Name{}
 	bytes := `{"mem":"1ss"}`

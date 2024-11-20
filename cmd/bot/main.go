@@ -1,4 +1,4 @@
-package bot
+package main
 
 import (
 	"github.com/Muvi7z/telegramBot.git/internal/clients/tg"

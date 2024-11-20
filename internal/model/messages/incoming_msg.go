@@ -1,6 +1,9 @@
 package messages
 
-import "strings"
+import (
+	"context"
+	"strings"
+)
 
 //Дз добавил возмодность добавления нового расхода, должно быть сумма, группа, дата,
 
@@ -20,7 +23,7 @@ const helpMessage = `Для работы с ботом тебе могут по�
 /list_year - за год.`
 
 type MessageSender interface {
-	SendMessage(userID int64, text string) error
+	SendMessage(userID int64, text string, buttons ...map[string]string) error
 }
 
 type Model struct {
@@ -48,11 +51,20 @@ func (s *Model) IncomingMessage(msg Message) error {
 	}
 
 	if strings.HasPrefix(msg.Text, "/add") {
-		return s.tgClient.SendMessage(msg.UserID, introMessage)
+		expense, err := s.addExpense(context.Background(), msg)
+		if err != nil {
+			return err
+		}
+		return s.tgClient.SendMessage(msg.UserID, expense)
 	}
 
 	if strings.HasPrefix(msg.Text, "/set_currency") {
 		return s.tgClient.SendMessage(msg.UserID, introMessage)
+	}
+
+	if strings.HasPrefix(msg.Text, "/change_currency") {
+		answer, buttons := s.changeDefaultCurrency()
+		return s.tgClient.SendMessage(msg.UserID, answer, buttons...)
 	}
 
 	return s.tgClient.SendMessage(123, "не знаю эту команду")
