@@ -10,7 +10,7 @@ func (s *Model) setCurrency(ctx context.Context, msg Message) (text string, err 
 func (s *Model) changeDefaultCurrency() (text string, buttons []map[string]string) {
 	btns := make(map[string]string)
 
-	btns["default"] = "stem"
+	btns["default"] = "/start"
 
-	return "", []map[string]string{btns}
+	return "Выберите валюту в которой будете производить расходы", []map[string]string{btns}
 }

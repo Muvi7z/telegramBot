@@ -5,17 +5,19 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
 	"log"
+	"log/slog"
 )
 
 type Client struct {
 	client *tgbotapi.BotAPI
+	logger *slog.Logger
 }
 
 type TokenGetter interface {
 	Token() string
 }
 
-func New(tokenGetter TokenGetter) (*Client, error) {
+func New(tokenGetter TokenGetter, logger *slog.Logger) (*Client, error) {
 	client, err := tgbotapi.NewBotAPI(tokenGetter.Token())
 
 	if err != nil {
@@ -24,6 +26,7 @@ func New(tokenGetter TokenGetter) (*Client, error) {
 
 	return &Client{
 		client: client,
+		logger: logger,
 	}, nil
 }
 
@@ -60,7 +63,7 @@ func (c *Client) ListenUpdate(msgModel *messages.Model) error {
 	log.Println("listening for messages")
 
 	for update := range updates {
-		if update.Message == nil {
+		if update.Message != nil {
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
 			err := msgModel.IncomingMessage(messages.Message{
@@ -68,9 +71,20 @@ func (c *Client) ListenUpdate(msgModel *messages.Model) error {
 				UserID: update.Message.From.ID,
 			})
 			if err != nil {
-				log.Println("error processing message:", err)
+				c.logger.Error("error processing message:", err)
 			}
-
+		} else if update.CallbackQuery != nil {
+			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
+			if _, err := c.client.Request(callback); err != nil {
+				c.logger.Error("error processing callback:", err)
+			}
+			err := msgModel.IncomingMessage(messages.Message{
+				Text:   update.CallbackQuery.Data,
+				UserID: update.CallbackQuery.From.ID,
+			})
+			if err != nil {
+				c.logger.Error("error processing message:", err)
+			}
 		}
 	}
 	return nil

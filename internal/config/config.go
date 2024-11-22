@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const configFile = "data/config/config.yaml"
+const configFile = "data/config.yaml"
 
 type Config struct {
 	Token string `yaml:"token"`
