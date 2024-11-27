@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/Muvi7z/telegramBot.git/internal/domain"
 	"github.com/pkg/errors"
+	"golang.org/x/text/encoding/charmap"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -25,7 +27,7 @@ func (gate *Gateway) FetchRates(ctx context.Context, date time.Time) ([]domain.R
 	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
 
-	url := fmt.Sprintf("https://www.cbr-xml-daily.ru/daily_eng_utf8.xml?date_req=%s", date.Format("02/01/2006"))
+	url := "https://www.cbr-xml-daily.ru/daily_utf8.xml" //fmt.Sprintf("https://www.cbr-xml-daily.ru/daily_eng_utf8.xml?date_req=%s", date.Format("02/01/2006"))
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -49,6 +51,15 @@ func (gate *Gateway) FetchRates(ctx context.Context, date time.Time) ([]domain.R
 	var cbrRates Rates
 
 	d := xml.NewDecoder(resp.Body)
+
+	d.CharsetReader = func(charset string, input io.Reader) (io.Reader, error) {
+		switch charset {
+		case "windows-1251":
+			return charmap.Windows1251.NewDecoder().Reader(input), nil
+		default:
+			return nil, errors.New("unsupported charset")
+		}
+	}
 
 	if err := d.Decode(&cbrRates); err != nil {
 		return nil, err

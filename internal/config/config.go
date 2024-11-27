@@ -9,7 +9,13 @@ import (
 const configFile = "data/config.yaml"
 
 type Config struct {
-	Token string `yaml:"token"`
+	Token            string           `yaml:"token"`
+	CurrencySettings CurrencySettings `yaml:"currency_settings"`
+}
+
+type CurrencySettings struct {
+	BaseCurrency   string   `yaml:"base_currency"`
+	SupportedCodes []string `yaml:"supported_codes"`
 }
 
 type Service struct {
@@ -32,4 +38,8 @@ func New() (*Service, error) {
 
 func (s *Service) Token() string {
 	return s.config.Token
+}
+
+func (s *Service) SupportedCurrencyCodes() []string {
+	return s.config.CurrencySettings.SupportedCodes
 }

@@ -7,6 +7,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
+	golang.org/x/text v0.20.0
 )
 
 require (
