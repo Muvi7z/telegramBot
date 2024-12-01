@@ -64,7 +64,7 @@ func LastProcessing(in <-chan job) <-chan job {
 	return out
 }
 
-func main1() {
+func main() {
 	length := 50_000_000
 	start := time.Now()
 

@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/Muvi7z/telegramBot.git/internal/clients/cbr"
 	"github.com/Muvi7z/telegramBot.git/internal/clients/tg"
 	"github.com/Muvi7z/telegramBot.git/internal/config"
 	"github.com/Muvi7z/telegramBot.git/internal/model/messages"
+	"github.com/Muvi7z/telegramBot.git/internal/services"
+	"github.com/Muvi7z/telegramBot.git/internal/worker"
 	"log/slog"
 	"os"
-	"time"
 )
 
 func main() {
@@ -25,16 +25,21 @@ func main() {
 		panic(err)
 	}
 
+	//GATEWAY
+
 	cbrGate := cbr.New()
-
-	rs, err := cbrGate.FetchRates(context.Background(), time.Now())
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(rs)
 
 	msgModel := messages.New(tgClient)
 
 	tgClient.ListenUpdate(msgModel)
+
+	//SERVICES
+
+	exchangeRateUpdateSVC := services.NewExchangeRateUpdateSvc(cbrGate, cfg)
+
+	//WORKERS
+
+	currencyExchangeRateWorker := worker.New(exchangeRateUpdateSVC)
+
+	currencyExchangeRateWorker.Run(context.Background())
 }
