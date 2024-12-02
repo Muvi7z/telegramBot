@@ -43,3 +43,6 @@ func (s *Service) Token() string {
 func (s *Service) SupportedCurrencyCodes() []string {
 	return s.config.CurrencySettings.SupportedCodes
 }
+func (s *Service) GetBaseCurrency() string {
+	return s.config.CurrencySettings.BaseCurrency
+}

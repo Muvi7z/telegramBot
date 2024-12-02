@@ -1,10 +1,8 @@
 package tg
 
 import (
-	"github.com/Muvi7z/telegramBot.git/internal/model/messages"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
-	"log"
 	"log/slog"
 )
 
@@ -54,39 +52,21 @@ func (c *Client) SendMessage(userId int64, text string, buttons ...map[string]st
 	return nil
 }
 
-func (c *Client) ListenUpdate(msgModel *messages.Model) error {
+func (c *Client) Start() tgbotapi.UpdatesChannel {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates := c.client.GetUpdatesChan(u)
+	return c.client.GetUpdatesChan(u)
+}
 
-	log.Println("listening for messages")
+func (c *Client) Stop() {
+	c.client.StopReceivingUpdates()
+}
 
-	for update := range updates {
-		if update.Message != nil {
-			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-			err := msgModel.IncomingMessage(messages.Message{
-				Text:   update.Message.Text,
-				UserID: update.Message.From.ID,
-			})
-			if err != nil {
-				c.logger.Error("error processing message:", err)
-			}
-		} else if update.CallbackQuery != nil {
-			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
-			if _, err := c.client.Request(callback); err != nil {
-				c.logger.Error("error processing callback:", err)
-			}
-			err := msgModel.IncomingMessage(messages.Message{
-				Text:   update.CallbackQuery.Data,
-				UserID: update.CallbackQuery.From.ID,
-			})
-			if err != nil {
-				c.logger.Error("error processing message:", err)
-			}
-		}
+func (c *Client) Request(callback tgbotapi.Chattable) (*tgbotapi.APIResponse, error) {
+	request, err := c.client.Request(callback)
+	if err != nil {
+		return nil, err
 	}
-	return nil
-
+	return request, nil
 }

@@ -35,14 +35,11 @@ func (gate *Gateway) FetchRates(ctx context.Context, date time.Time) ([]domain.R
 	}
 	req.Header.Add("Accept", "*/*")
 	req.Header.Add("Content-Type", "application/xml")
-	fmt.Println(req)
-	fmt.Println(http.DefaultClient.Get(url))
 	resp, err := gate.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(url)
-	fmt.Println(resp)
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New(fmt.Sprintf("failed to get rates on the date %s", date.Format("02/01/2006")))

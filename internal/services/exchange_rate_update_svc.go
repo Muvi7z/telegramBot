@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"github.com/Muvi7z/telegramBot.git/internal/domain"
+	"log"
 	"time"
 )
 
@@ -41,6 +42,7 @@ func (svc *ExchangeRateUpdateSvc) UpdateExchangeRatesOn(ctx context.Context, tim
 	for _, rate := range rates {
 		if _, ok := supportedCodesMap[rate.Code]; ok {
 			//перевод в kopecs
+			log.Println(rate.Course, rate.Code)
 		}
 	}
 	return nil

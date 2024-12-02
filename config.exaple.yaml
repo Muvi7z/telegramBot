@@ -1,2 +1,9 @@
 # tg token
 token:
+currency_settings:
+  base_currency:
+  supported_codes:
+    - USD
+    - RUB
+    - EUR
+    - CNY

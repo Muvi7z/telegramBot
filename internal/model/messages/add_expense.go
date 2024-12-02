@@ -2,8 +2,8 @@ package messages
 
 import (
 	"context"
-	"github.com/Muvi7z/telegramBot.git/helpers"
 	"github.com/Muvi7z/telegramBot.git/internal/domain"
+	"github.com/Muvi7z/telegramBot.git/internal/helpers/money"
 	"github.com/pkg/errors"
 	"log"
 	"strings"
@@ -31,9 +31,9 @@ func (s *Model) addExpense(ctx context.Context, msg Message) (string, error) {
 		title = strings.TrimSpace(parts[1])
 	}
 
-	kopecks, err := helpers.ConvertStringAmountToKopecks(parts[0])
+	kopecks, err := money.ConvertStringAmountToKopecks(parts[0])
 	if err != nil {
-		return "", helpers.ErrInvalidAmount
+		return "", money.ErrInvalidAmount
 	}
 
 	if len(parts) >= 3 {

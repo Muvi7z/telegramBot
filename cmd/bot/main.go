@@ -18,6 +18,8 @@ func main() {
 		panic(err)
 	}
 
+	ctx := context.Background()
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
 	tgClient, err := tg.New(cfg, logger)
@@ -31,8 +33,6 @@ func main() {
 
 	msgModel := messages.New(tgClient)
 
-	tgClient.ListenUpdate(msgModel)
-
 	//SERVICES
 
 	exchangeRateUpdateSVC := services.NewExchangeRateUpdateSvc(cbrGate, cfg)
@@ -41,5 +41,10 @@ func main() {
 
 	currencyExchangeRateWorker := worker.New(exchangeRateUpdateSVC)
 
-	currencyExchangeRateWorker.Run(context.Background())
+	currencyExchangeRateWorker.Run(ctx)
+
+	messagesListenerWorker := worker.NewMessageListenerWorker(tgClient, msgModel, logger)
+
+	messagesListenerWorker.Run(ctx)
+
 }
