@@ -15,15 +15,21 @@ type ConfigGetter interface {
 	SupportedCurrencyCodes() []string
 }
 
+type RateStorage interface {
+	AddRate(ctx context.Context, time time.Time, rate domain.Rate) error
+}
+
 type ExchangeRateUpdateSvc struct {
 	gateway ExchangeRateFetcherGateway
 	config  ConfigGetter
+	storage RateStorage
 }
 
-func NewExchangeRateUpdateSvc(gateway ExchangeRateFetcherGateway, config ConfigGetter) *ExchangeRateUpdateSvc {
+func NewExchangeRateUpdateSvc(storage RateStorage, gateway ExchangeRateFetcherGateway, config ConfigGetter) *ExchangeRateUpdateSvc {
 	return &ExchangeRateUpdateSvc{
 		gateway: gateway,
 		config:  config,
+		storage: storage,
 	}
 }
 
@@ -43,6 +49,11 @@ func (svc *ExchangeRateUpdateSvc) UpdateExchangeRatesOn(ctx context.Context, tim
 		if _, ok := supportedCodesMap[rate.Code]; ok {
 			//перевод в kopecs
 			log.Println(rate.Course, rate.Code)
+
+			err = svc.storage.AddRate(ctx, time, rate)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 	return nil

@@ -2,6 +2,7 @@ package messages
 
 import (
 	"context"
+	"github.com/Muvi7z/telegramBot.git/internal/domain"
 	"strings"
 )
 
@@ -26,13 +27,19 @@ type MessageSender interface {
 	SendMessage(userID int64, text string, buttons ...map[string]string) error
 }
 
-type Model struct {
-	tgClient MessageSender
+type RateStorage interface {
+	GetRates() ([]domain.Rate, error)
 }
 
-func New(tgClient MessageSender) *Model {
+type Model struct {
+	tgClient    MessageSender
+	rateStorage RateStorage
+}
+
+func New(tgClient MessageSender, rateStorage RateStorage) *Model {
 	return &Model{
-		tgClient: tgClient,
+		tgClient:    tgClient,
+		rateStorage: rateStorage,
 	}
 }
 
