@@ -52,3 +52,12 @@ install-smartimports: bindir
 
 docker-run:
 	sudo docker compose up
+
+
+goose-run:
+	C:/Users/Ochir.zha/Downloads/goose/goose_windows_x86_64.exe -dir migrations postgres "host=localhost port=5432 user=postgres password=pass sslmode=disable" up
+
+goose-status:
+	C:/Users/Ochir.zha/Downloads/goose/goose_windows_x86_64.exe -dir migrations postgres "host=localhost port=5432 user=postgres password=pass sslmode=disable" status
+
+

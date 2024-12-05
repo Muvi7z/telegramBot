@@ -1,15 +1,17 @@
 package domain
 
 import (
-	"gorm.io/gorm"
 	"time"
 )
 
 type Rate struct {
-	gorm.Model
-	Code    string
-	Nominal int64
-	Course  string
-	Kopecks int64
-	Ts      time.Time
+	ID        int
+	Code      string
+	Nominal   int64
+	Course    string
+	Kopecks   int64
+	Ts        time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
 }

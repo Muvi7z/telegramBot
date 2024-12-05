@@ -29,7 +29,7 @@ type MessageSender interface {
 }
 
 type RateStorage interface {
-	GetRate(ctx context.Context, Code string, time time.Time) (domain.Rate, error)
+	GetRate(ctx context.Context, Code string, time time.Time) (*domain.Rate, error)
 }
 
 type Model struct {
