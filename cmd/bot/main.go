@@ -6,6 +6,7 @@ import (
 	"github.com/Muvi7z/telegramBot.git/internal/clients/tg"
 	"github.com/Muvi7z/telegramBot.git/internal/config"
 	"github.com/Muvi7z/telegramBot.git/internal/database"
+	"github.com/Muvi7z/telegramBot.git/internal/domain"
 	"github.com/Muvi7z/telegramBot.git/internal/model/messages"
 	"github.com/Muvi7z/telegramBot.git/internal/services"
 	"github.com/Muvi7z/telegramBot.git/internal/worker"
@@ -22,8 +23,14 @@ func main() {
 		panic(err)
 	}
 	db, err := gorm.Open(postgres.Open("host=localhost port=5432 user=postgres password=pass"))
+	if err != nil {
+		panic(err)
+	}
 
-	_ = db
+	err = db.AutoMigrate(&domain.Rate{})
+	if err != nil {
+		panic(err)
+	}
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
@@ -34,10 +41,7 @@ func main() {
 
 	//DATABASE
 
-	rateDB, err := database.NewRateDB()
-	if err != nil {
-		panic(err)
-	}
+	rateDB := database.NewRateDB(db)
 
 	//GATEWAY
 

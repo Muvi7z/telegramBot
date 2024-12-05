@@ -19,7 +19,7 @@ func New(updater CurrencyExchangeRateUpdate) *CurrencyExchangeRateWorker {
 }
 
 func (worker *CurrencyExchangeRateWorker) Run(ctx context.Context) {
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(50 * time.Second)
 
 	go func() {
 		for {

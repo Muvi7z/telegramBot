@@ -50,6 +50,8 @@ func (svc *ExchangeRateUpdateSvc) UpdateExchangeRatesOn(ctx context.Context, tim
 			//перевод в kopecs
 			log.Println(rate.Course, rate.Code)
 
+			rate.Ts = time
+
 			err = svc.storage.AddRate(ctx, time, rate)
 			if err != nil {
 				log.Println(err)

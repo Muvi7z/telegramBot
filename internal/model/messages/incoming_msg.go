@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Muvi7z/telegramBot.git/internal/domain"
 	"strings"
+	"time"
 )
 
 //Дз добавил возмодность добавления нового расхода, должно быть сумма, группа, дата,
@@ -28,7 +29,7 @@ type MessageSender interface {
 }
 
 type RateStorage interface {
-	GetRates() ([]domain.Rate, error)
+	GetRate(ctx context.Context, Code string, time time.Time) (domain.Rate, error)
 }
 
 type Model struct {
